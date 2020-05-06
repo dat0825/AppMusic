@@ -1,0 +1,2 @@
+rootProject.name='ZingMP3'
+include ':app'
