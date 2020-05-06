@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -27,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         this.previousSongButton = findViewById(R.id.previousSong);
         this.nameSong = findViewById(R.id.nameSong);
         this.totalTime = findViewById(R.id.totaltime);
-        this.currentTime = findViewById(R.id.currenttime);
+        this.currentTimeSong = findViewById(R.id.currenttime);
         this.barSong = findViewById(R.id.seekBar);
 
         this.mediaPlayer = MediaPlayer.create(MainActivity.this, listSong.get(indexSong).getFile());
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         setTotalTime();
         this.playSong = true;
         this.nameSong.setText(listSong.get(indexSong).getNameSong());
+        setStateButtonPlay();
         this.buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        setCurrentTimeSong();
     }
 
     private void setStateButtonPlay() {
@@ -121,10 +125,28 @@ public class MainActivity extends AppCompatActivity {
                 TimeUnit.MILLISECONDS.toSeconds(timeSong) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeSong)));
         totalTime.setText(time);
-        barSong.setMax(timeSong);
+        barSong.setMax(timeSong/1000);
     }
 
-    public void setCurrentTimeSong(){
+    public void setCurrentTimeSong() {
+        handler = new Handler();
+        MainActivity.this.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                int currentTime = 0;
+                if (mediaPlayer != null) {
+                    currentTime = mediaPlayer.getCurrentPosition() / 1000;
+                    barSong.setProgress(currentTime);
+                }
+                handler.postDelayed(this, 1000);
+                String time = String.format("%d:%d",
+                        TimeUnit.SECONDS.toMinutes(currentTime),
+                        TimeUnit.SECONDS.toSeconds(currentTime) -
+                                TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(currentTime)));
+                currentTimeSong.setText(time);
+            }
+        });
 
     }
 
@@ -137,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar barSong;
     private TextView nameSong;
     private TextView totalTime;
-    private TextView currentTime;
+    private TextView currentTimeSong;
     private boolean playSong;
+    private Handler handler;
 }
