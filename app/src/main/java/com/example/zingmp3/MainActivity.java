@@ -99,6 +99,28 @@ public class MainActivity extends AppCompatActivity {
         });
 
         setCurrentTimeSong();
+
+        barSong.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                if(b){
+                    barSong.setProgress(progress);
+                    if(mediaPlayer != null){
+                        mediaPlayer.seekTo(progress*1000);
+                    }
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     private void setStateButtonPlay() {
