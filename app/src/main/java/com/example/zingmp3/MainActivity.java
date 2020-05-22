@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -31,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
         this.totalTime = findViewById(R.id.totaltime);
         this.currentTimeSong = findViewById(R.id.currenttime);
         this.barSong = findViewById(R.id.seekBar);
+        this.imageSong = findViewById(R.id.imageSong);
+
+        rotatetAnimation();
 
         this.mediaPlayer = MediaPlayer.create(MainActivity.this, listSong.get(indexSong).getFile());
         this.mediaPlayer.start();
@@ -45,11 +50,13 @@ public class MainActivity extends AppCompatActivity {
                     buttonPlay.setImageResource(R.drawable.pausebutton);
                     playSong = false;
                     mediaPlayer.pause();
+                    imageSong.clearAnimation();
                 } else {
                     buttonPlay.setImageResource(R.drawable.playbutton);
                     playSong = true;
                     mediaPlayer.start();
                     barSong.setProgress(0);
+                    imageSong.startAnimation(rotateAnimation);
                 }
             }
         });
@@ -172,6 +179,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void rotatetAnimation(){
+        rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        imageSong.startAnimation(rotateAnimation);
+    }
     private List<Song> listSong = new ArrayList<>();
     private int indexSong = 0;
     private ImageView buttonPlay;
@@ -184,4 +195,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView currentTimeSong;
     private boolean playSong;
     private Handler handler;
+    private Animation rotateAnimation;
+    private ImageView imageSong;
 }
